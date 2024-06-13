@@ -26,8 +26,30 @@ function HashMap() {
     obj[key] = value;
 
     if (buckets[index] !== undefined) {
+      // check if it is not an array and key doesn't match, create array with objects of same index
       // create new array with old values and new value added on
-      buckets[index] = Array.prototype.concat.call(buckets[index], obj);
+      if (Array.isArray(buckets[index])) {
+        // traverse the array to see if key is in there
+        if (has(key)) {
+          for (let i = 0; i < buckets[index].length; i++) {
+            if (Object.keys(buckets[index][i]).toString() === key) {
+              buckets[index][i] = obj;
+            }
+          }
+        } else {
+          buckets[index] = Array.prototype.concat.call(buckets[index], obj);
+        }
+      } else {
+        // if not an array and value is already in that bucket, update the key value
+        if (Object.keys(buckets[index]).toString() === key) {
+          buckets[index] = obj;
+        } else {
+          // else,
+          // if buckets[index] is not an array,
+          // and key is not found here, create an array and add it
+          buckets[index] = Array.prototype.concat.call(buckets[index], obj);
+        }
+      }
     } else {
       // else, just put single object in bucket
       buckets[index] = obj;
